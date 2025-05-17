@@ -1,0 +1,86 @@
+//TODO: NES Emulator with FDS Support
+
+//1. Project Setup
+//    - Set up project structure and build system (CMake, Makefile, etc.)
+//    - Choose programming language (C++, Rust, etc.)
+//    - Set up version control (Git)
+
+//2. CPU Emulation (6502)
+//    - Implement 6502 CPU core (registers, flags, memory access)
+//    - Implement all 6502 instructions and addressing modes
+//    - Implement interrupts (NMI, IRQ, RESET)
+//    - Add cycle-accurate timing
+
+//3. PPU Emulation (Picture Processing Unit)
+//    - Implement PPU registers and memory
+//    - Emulate background and sprite rendering
+//    - Implement scrolling and mirroring
+//    - Handle VBlank and NMI generation
+
+//4. APU Emulation (Audio Processing Unit)
+//    - Implement audio channels (pulse, triangle, noise, DMC)
+//    - Handle audio mixing and output
+//    - Implement frame counter and timing
+
+//5. Memory Mapping
+//    - Implement CPU and PPU memory maps
+//    - Support for RAM, ROM, and I/O registers
+//    - Implement mapper interface
+
+//6. Cartridge Support
+//    - Implement iNES file format parsing
+//    - Implement common mappers (NROM, MMC1, MMC3, etc.)
+//    - Add support for battery-backed saves
+
+//7. FDS (Famicom Disk System) Support
+//    - Implement FDS BIOS loading and execution
+//    - Emulate FDS disk controller and drive mechanics
+//    - Handle disk insertion, ejection, and swapping
+//    - Emulate FDS audio channel
+//    - Support FDS file formats (.fds, .qd)
+
+//8. Input Handling
+//    - Emulate NES controllers (standard, Zapper, etc.)
+//    - Map keyboard/gamepad input to NES controls
+
+//9. Video Output
+//    - Implement video rendering (SDL, OpenGL, etc.)
+//    - Support for windowed and fullscreen modes
+//    - Implement frame timing and vsync
+
+//10. Audio Output
+//     - Implement audio playback (SDL, OpenAL, etc.)
+//     - Handle audio buffer synchronization
+
+//11. User Interface
+//     - Implement ROM/FDS disk selection menu
+//     - Add save/load state functionality
+//     - Add configuration options (controls, video, audio)
+
+//12. Testing and Debugging
+//     - Write unit tests for CPU, PPU, and APU
+//     - Use NES test ROMs for accuracy verification
+//     - Implement debugging tools (breakpoints, memory viewer, etc.)
+
+//13. Documentation
+//     - Write user manual and developer documentation
+//     - Document code and architecture
+
+//14. Packaging and Distribution
+//     - Package binaries for target platforms
+//     - Write installation instructions
+
+//15. Optional Features
+//     - Netplay/multiplayer support
+//     - Rewind/fast-forward functionality
+//     - Cheat code support (Game Genie, Pro Action Replay)
+//     - TAS (Tool-Assisted Speedrun) recording/playback
+//     - Movie recording (video/audio capture)
+//     - Custom shader support (CRT filters, scaling)
+//     - Per-game configuration overrides
+//     - Localization/multi-language support
+//     - Accessibility features (colorblind modes, remappable controls)
+//     - Auto-updater or plugin system
+//     - Performance profiling and benchmarking tools
+//     - Cross-platform support (Windows, Linux, macOS)
+//     - Mobile platform support (Android, iOS)
