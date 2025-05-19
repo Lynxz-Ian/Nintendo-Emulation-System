@@ -2,11 +2,22 @@
 
 #include "../Header Files/Bus.h"
 #include <iostream>
+#include <map>
+#include <string>
+#include <sstream>
+#include <iomanip>
+
+std::string hex(uint32_t n, uint8_t d)
+{
+    std::stringstream ss;
+    ss << std::uppercase << std::setfill('0') << std::setw(d) << std::hex << n;
+    return ss.str();
+}
 
 
 CPU6502::CPU6502()
 {
-	// The table is one big initialiser lists of initialiser lists
+	// This table is one big initialiser lists of initialiser lists
 
 	using a = CPU6502;
 
@@ -888,4 +899,97 @@ uint8_t CPU6502::LDY() { fetch(); y = fetched; SetFlag(Z, y == 0); SetFlag(N, y 
 uint8_t CPU6502::LDA() { fetch(); a = fetched; std::cout << "[LDA] a = $" << std::hex << (int)a << std::endl; SetFlag(Z, a == 0); SetFlag(N, a & 0x80); return 1; }
 uint8_t CPU6502::LDX() { fetch(); x = fetched; SetFlag(Z, x == 0); SetFlag(N, x & 0x80); return 1; }
 uint8_t CPU6502::GetFlag(FLAGS6502 f) { return ((status & f) > 0) ? 1 : 0; }
+
+std::map<uint16_t, std::string> CPU6502::disassemble(uint16_t nStart, uint16_t nStop)
+{
+    uint32_t addr = nStart;
+    uint8_t value = 0x00, lo = 0x00, hi = 0x00;
+    std::map<uint16_t, std::string> mapLines;
+    uint16_t line_addr = 0;
+
+    // Helper lambda to read a byte from the bus
+    auto read = [&](uint16_t a) { return bus->Read(a, true); };
+
+    while (addr <= nStop)
+    {
+        line_addr = addr;
+        std::string sInst = "$" + hex(addr, 4) + ": ";
+        uint8_t opcode = read(addr); addr++;
+        sInst += lookup[opcode].name + " ";
+
+        if (lookup[opcode].addrmode == &CPU6502::IMP)
+        {
+            sInst += " {IMP}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::IMM)
+        {
+            value = read(addr); addr++;
+            sInst += "#$" + hex(value, 2) + " {IMM}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::ZP0)
+        {
+            lo = read(addr); addr++;
+            sInst += "$" + hex(lo, 2) + " {ZP0}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::ZPX)
+        {
+            lo = read(addr); addr++;
+            sInst += "$" + hex(lo, 2) + ", X {ZPX}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::ZPY)
+        {
+            lo = read(addr); addr++;
+            sInst += "$" + hex(lo, 2) + ", Y {ZPY}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::IZX)
+        {
+            lo = read(addr); addr++;
+            sInst += "($" + hex(lo, 2) + ", X) {IZX}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::IZY)
+        {
+            lo = read(addr); addr++;
+            sInst += "($" + hex(lo, 2) + "), Y {IZY}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::ABS)
+        {
+            lo = read(addr); addr++;
+            hi = read(addr); addr++;
+            sInst += "$" + hex((uint16_t)((hi << 8) | lo), 4) + " {ABS}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::ABX)
+        {
+            lo = read(addr); addr++;
+            hi = read(addr); addr++;
+            sInst += "$" + hex((uint16_t)((hi << 8) | lo), 4) + ", X {ABX}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::ABY)
+        {
+            lo = read(addr); addr++;
+            hi = read(addr); addr++;
+            sInst += "$" + hex((uint16_t)((hi << 8) | lo), 4) + ", Y {ABY}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::IND)
+        {
+            lo = read(addr); addr++;
+            hi = read(addr); addr++;
+            sInst += "($" + hex((uint16_t)((hi << 8) | lo), 4) + ") {IND}";
+        }
+        else if (lookup[opcode].addrmode == &CPU6502::REL)
+        {
+            value = read(addr); addr++;
+            sInst += "$" + hex(value, 2) + " [$" + hex(addr + (int8_t)value, 4) + "] {REL}";
+        }
+        else
+        {
+            sInst += "???";
+        }
+
+        mapLines[line_addr] = sInst;
+    }
+
+    return mapLines;
+}
+
+
 

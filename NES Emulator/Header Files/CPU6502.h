@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <map>
 
 class Bus;
 class CPU6502
@@ -33,7 +34,9 @@ public:
     uint16_t status = 0x0;     // Stack Pointer
 
     void ConnectBus(Bus *n) { bus = n; }
-
+    std::map<uint16_t, std::string> disassemble(uint16_t start, uint16_t stop);
+        uint16_t line_addr = 0x0000;
+    
     // Addressing Modes
     uint8_t IMP();  uint8_t IMM();
     uint8_t ZP0();  uint8_t ZPX();

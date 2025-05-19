@@ -8,6 +8,7 @@ int main()
     Bus nes;
 
    // Load test program at $8000
+   /*
     std::stringstream ss;
     ss << "A9 01 8D 00 02 A9 05 6D 00 02 8D 01 02 00";
     uint16_t nOffset = 0x8000;
@@ -37,10 +38,11 @@ int main()
         } while (!nes.cpu.complete());
     }
 
-    // Print results
+    //Print results
     std::cout << "RAM[0x0200] = $" << std::hex << (int)nes.ram[0x0200] << std::endl;
     std::cout << "RAM[0x0201] = $" << std::hex << (int)nes.ram[0x0201] << std::endl;
     std::cout << "A = $" << std::hex << (int)nes.cpu.a << std::endl;
-
+    */
+   
     return 0;
 }
