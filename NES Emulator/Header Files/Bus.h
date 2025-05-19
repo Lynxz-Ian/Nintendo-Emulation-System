@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include "6502.h"
+#include "CPU6502.h"
 #include <array>
 
 class Bus
@@ -10,7 +10,7 @@ public:
         ~Bus();
 
 public: // Devices on bus
-    6502 cpu;
+    CPU6502 cpu;
 
 // Fake RAM for testing
     std::array<uint8_t, 64* 1024> ram;
