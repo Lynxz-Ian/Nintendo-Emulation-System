@@ -5,7 +5,7 @@
 Bus::Bus()
 {
     // Clear RAM just in case
-    for (auto &i : ram) i = 0x00;
+    for (auto &i : cpuRam) i = 0x00;
     
     // Connect CPU to comm. bus
     cpu.ConnectBus(this);
@@ -16,20 +16,53 @@ Bus::~Bus()
 {
     // Nothing to do here
 }
+void Bus::cpuWrite(uint16_t addr, uint8_t data) 
+{
+    cart->cpuWrite(addr, data);
 
-uint8_t Bus::Read(uint16_t addr, bool readOnly) {
-    if (addr <= 0x0000 && addr <= 0x1FFF) {
-        // Mirror RAM every 0x0800
-        return ram[addr & 0x07FF];
+    if (addr >= 0x0000 && addr <= 0x1FFF)
+    {
+        cpuRam[addr & 0x07FF] = data;
     }
-    // TODO: Add other device reads (PPU, APU, etc.)
-    return ram[addr];
+    else if (addr >= 0x2000 && addr <= 0x3FFF)
+    {
+        ppu.cpuWrite(addr & 0x0007, data);
+    }
 }
 
-void Bus::Write(uint16_t addr, uint8_t data) {
-    if (addr >= 0x0000 && addr <= 0x1FFF) {
-        // Mirror RAM every 0x0800
-        ram[addr & 0x07FF] = data;
+uint8_t Bus::cpuRead(uint16_t addr, bool bReadOnly) 
+{
+    uint8_t data = 0x00;
+
+    if (cart->cpuRead(addr, data))
+    {
+        // Address Range for cartridge
     }
-    // TODO: Add other device writes (PPU, APU, etc.)
+    else if (addr >= 0x0000 && addr <= 0x1FFF)
+    {
+        data = cpuRam[addr & 0x07FF]; // Mirror RAM every 0x0800
+    }
+    else if (addr>= 0x2000 && addr <= 0x3FFF)
+    {
+        data = ppu.cpuRead(addr & 0x0007, bReadOnly);
+    }
+
+        
+        return data;
+}
+
+void Bus::insertCartridge(const std::shared_ptr<Cartridge>& cartridge)
+{
+    this->cartridge = cartridge;
+    ppu.ConnectCartridge(cartridge);
+}
+
+void Bus::reset()
+{
+    cpu.reset();
+    nSystemClockCounter = 0;
+}
+
+void Bus::clock()
+{
 }

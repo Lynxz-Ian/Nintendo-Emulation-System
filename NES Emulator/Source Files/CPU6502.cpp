@@ -51,13 +51,13 @@ CPU6502::~CPU6502()
 
 uint8_t CPU6502::read(uint16_t a)
 {
-    return bus->Read(a, false);
+    return bus->cpuRead(a, false);
 };
 
 
 void CPU6502::write(uint16_t a, uint8_t d)
 {
-    bus->Write(a, d);
+    bus->cpuWrite(a, d);
 };
 
 
@@ -908,7 +908,7 @@ std::map<uint16_t, std::string> CPU6502::disassemble(uint16_t nStart, uint16_t n
     uint16_t line_addr = 0;
 
     // Helper lambda to read a byte from the bus
-    auto read = [&](uint16_t a) { return bus->Read(a, true); };
+    auto read = [&](uint16_t a) { return bus->cpuRead(a, true); };
 
     while (addr <= nStop)
     {

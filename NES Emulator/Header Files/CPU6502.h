@@ -31,7 +31,7 @@ public:
     uint8_t y       = 0x00;       // Y Register
     uint8_t stkp    = 0x00;       // Stack Pointer
     uint16_t pc     = 0x0000;     // Program Counter
-    uint16_t status = 0x0;     // Stack Pointer
+    uint16_t status = 0x0;        // Status Pointer
 
     void ConnectBus(Bus *n) { bus = n; }
     std::map<uint16_t, std::string> disassemble(uint16_t start, uint16_t stop);
