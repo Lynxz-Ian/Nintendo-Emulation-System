@@ -17,17 +17,23 @@ int main()
 
     nes.cpu.reset();
 
-    // Run a limited number of CPU cycles for debugging
-    for (int i = 0; i < 100; ++i) {
+    // Run CPU until a certain number of instructions have completed
+    int instructions = 100; // or however many you want to step
+    while (instructions > 0)
+    {
         nes.cpu.clock();
-        // Print CPU state for debugging
-        std::cout << "PC: $" << std::hex << nes.cpu.pc
-                  << "  A: $" << (int)nes.cpu.a
-                  << "  X: $" << (int)nes.cpu.x
-                  << "  Y: $" << (int)nes.cpu.y
-                  << "  P: $" << (int)nes.cpu.status
-                  << "  SP: $" << (int)nes.cpu.stkp
-                  << std::endl;
+        if (nes.cpu.complete())
+        {
+            // Print CPU state for debugging
+            std::cout << "PC: $" << std::hex << nes.cpu.pc
+                      << "  A: $" << (int)nes.cpu.a
+                      << "  X: $" << (int)nes.cpu.x
+                      << "  Y: $" << (int)nes.cpu.y
+                      << "  P: $" << (int)nes.cpu.status
+                      << "  SP: $" << (int)nes.cpu.stkp
+                      << std::endl;
+            instructions--;
+        }
     }
 
     return 0;

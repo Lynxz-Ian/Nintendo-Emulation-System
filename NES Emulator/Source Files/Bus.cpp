@@ -18,7 +18,8 @@ Bus::~Bus()
 }
 void Bus::cpuWrite(uint16_t addr, uint8_t data) 
 {
-    cart->cpuWrite(addr, data);
+    if (cartridge && cartridge->cpuWrite(addr, data))
+        return;
 
     if (addr >= 0x0000 && addr <= 0x1FFF)
     {
@@ -34,21 +35,20 @@ uint8_t Bus::cpuRead(uint16_t addr, bool bReadOnly)
 {
     uint8_t data = 0x00;
 
-    if (cart->cpuRead(addr, data))
+    if (cartridge && cartridge->cpuRead(addr, data))
     {
-        // Address Range for cartridge
+        // Data loaded from cartridge
     }
     else if (addr >= 0x0000 && addr <= 0x1FFF)
     {
-        data = cpuRam[addr & 0x07FF]; // Mirror RAM every 0x0800
+        data = cpuRam[addr & 0x07FF];
     }
-    else if (addr>= 0x2000 && addr <= 0x3FFF)
+    else if (addr >= 0x2000 && addr <= 0x3FFF)
     {
         data = ppu.cpuRead(addr & 0x0007, bReadOnly);
     }
 
-        
-        return data;
+    return data;
 }
 
 void Bus::insertCartridge(const std::shared_ptr<Cartridge>& cartridge)
